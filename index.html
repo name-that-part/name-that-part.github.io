@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Name That Part: 3D Part Segmentation and Naming</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Name That Part: 3D Part Segmentation and Naming">
+  <meta property="og:title" content="Name That Part: 3D Part Segmentation and Naming">
+  <meta property="og:description" content="ALIGN-Parts: fast, one-shot 3D part segmentation and naming via set-level alignment.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="data/ntp_logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Name That Part">
+  <meta name="twitter:description" content="3D Part Segmentation and Naming with ALIGN-Parts.">
+  <meta name="twitter:image" content="data/ntp_logo.png">
+
+  <link rel="icon" type="image/png" href="data/ntp_logo.png">
+
+  <!-- BlenderFusion template assets -->
+  <script src="https://blenderfusion.github.io/static/js/distill_template.v2.js"></script>
+  <link rel="stylesheet" href="https://blenderfusion.github.io/static/css/style.css">
+  <link rel="stylesheet" href="https://blenderfusion.github.io/static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <script defer src="https://blenderfusion.github.io/static/js/fontawesome.all.min.js"></script>
+
+  <!-- MathJax (for equations) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  <!-- Author rotation -->
+  <script defer src="static/js/name-that-part.js"></script>
+
+  <style>
+    .paper-logo {
+      height: 2.8rem;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .contrib-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.2rem 0 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .contrib-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: #fff7d4;
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+
+    .contrib-icon {
+      color: #ffe099;
+      width: 22px;
+      text-align: center;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .header-video {
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
+      background: #000;
+      display: block;
+    }
+
+    .byline-card {
+      max-width: 1200px;
+      margin: -36px auto 26px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.10);
+      padding: 18px 20px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .byline-card {
+        margin: -18px 12px 20px;
+      }
+    }
+
+    .byline-desc {
+      max-width: 1000px;
+      margin: 8px auto 14px;
+      color: #555;
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+
+    .teaser-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+	    @media (max-width: 900px) {
+	      .teaser-grid {
+	        grid-template-columns: 1fr;
+	      }
+	    }
+
+	    .teaser-video {
+	      position: relative;
+	      width: 100%;
+	    }
+
+	    .video-legend {
+	      position: absolute;
+	      top: 10px;
+	      left: 10px;
+	      display: flex;
+	      flex-direction: column;
+	      gap: 6px;
+	      padding: 10px 10px;
+	      background: rgba(255, 255, 255, 0.82);
+	      border: 1px solid rgba(0, 0, 0, 0.08);
+	      border-radius: 12px;
+	      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+	      backdrop-filter: blur(6px);
+	      pointer-events: none;
+	    }
+
+	    .legend-item {
+	      display: flex;
+	      align-items: center;
+	      gap: 8px;
+	      line-height: 1.1;
+	      font-size: 0.95rem;
+	      font-weight: 800;
+	      color: var(--legend-color);
+	      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+	      white-space: nowrap;
+	    }
+
+	    .legend-swatch {
+	      width: 11px;
+	      height: 11px;
+	      border-radius: 4px;
+	      background: var(--legend-color);
+	      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+	      flex: 0 0 auto;
+	    }
+
+    .secondary-teaser-img {
+      width: 85%;
+      max-width: 900px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      background: #fff;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .secondary-teaser-img {
+        width: 100%;
+      }
+    }
+
+    /* Reuse our project-page callouts + author cycling */
+    .joint-authors {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0;
+    }
+    .joint-authors .joint-author {
+      display: inline-flex;
+      white-space: nowrap;
+    }
+	    .joint-authors.joint-cycle:focus-visible {
+	      outline: 2px solid #0f598a;
+	      outline-offset: 4px;
+	      border-radius: 6px;
+	    }
+
+	    sup.author-sup {
+	      vertical-align: super !important;
+	      top: 0 !important;
+	    }
+
+	    .authors a.author-link {
+	      color: #1e56ff;
+	      text-decoration: underline;
+	      text-decoration-thickness: 1.5px;
+	      text-underline-offset: 3px;
+	    }
+
+	    .authors a.author-link:hover {
+	      color: #0f3bd8;
+	    }
+
+    .note-box {
+      border: 3px solid #0f598a;
+      border-radius: 10px;
+      padding: 1.2em;
+      background-color: #fefefe;
+      position: relative;
+      font-family: Charter, Georgia, serif;
+      max-width: 900px;
+      margin: 2em auto;
+      line-height: 1.6;
+    }
+    .note-box::before {
+      content: "Note";
+      position: absolute;
+      top: -1.4em;
+      left: 0;
+      background-color: #0f598a;
+      color: #ffffff;
+      padding: 0.4em 1em;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .callout {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background-color: #f7faff;
+      border-left: 4px solid #0f598a;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin: 14px 0;
+      width: 120%;
+      margin-left: -10%;
+      box-sizing: border-box;
+    }
+    .callout-icon {
+      color: #0f598a;
+      font-size: 1.2rem;
+      line-height: 1.2rem;
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+    .callout-title {
+      font-weight: 800;
+      color: #0f598a;
+      margin-bottom: 2px;
+    }
+    .callout-body {
+      color: #333333;
+    }
+
+    .details-box {
+      margin: 20px 0;
+      border: 1px solid #dddddd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      background-color: #f9f9fb;
+      width: 120%;
+      margin-left: -10%;
+      box-sizing: border-box;
+    }
+    .details-box summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      color: #0f598a;
+    }
+    .details-body {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-top: 12px;
+      color: #333333;
+    }
+	    .equation-block {
+	      text-align: center;
+	      font-size: 18px;
+	      padding: 10px 0;
+	      overflow-x: auto;
+	    }
+
+	    .podcast-card {
+	      margin: 18px auto 0;
+	      max-width: 900px;
+	      background: rgba(255, 255, 255, 0.92);
+	      border: 1px solid rgba(15, 89, 138, 0.12);
+	      border-radius: 14px;
+	      padding: 12px 14px;
+	      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+	      display: flex;
+	      flex-wrap: wrap;
+	      gap: 10px 14px;
+	      align-items: center;
+	      justify-content: center;
+	      text-align: left;
+	    }
+
+	    .podcast-card .podcast-meta {
+	      display: flex;
+	      flex-wrap: wrap;
+	      gap: 8px;
+	      align-items: baseline;
+	      justify-content: center;
+	      color: #333333;
+	      font-size: 1rem;
+	      line-height: 1.4;
+	    }
+
+	    .podcast-card .podcast-label {
+	      display: inline-flex;
+	      align-items: center;
+	      gap: 8px;
+	      font-weight: 800;
+	      color: #0f598a;
+	      white-space: nowrap;
+	    }
+
+	    .podcast-toggle {
+	      border: none;
+	      border-radius: 999px;
+	      padding: 8px 14px;
+	      background: #0f598a;
+	      color: #ffffff;
+	      cursor: pointer;
+	      display: inline-flex;
+	      align-items: center;
+	      gap: 8px;
+	      font-weight: 700;
+	    }
+
+	    .podcast-toggle:focus-visible {
+	      outline: 3px solid rgba(15, 89, 138, 0.35);
+	      outline-offset: 3px;
+	    }
+
+	    .podcast-toggle[aria-pressed="true"] {
+	      background: #083a5a;
+	    }
+
+	    .podcast-audio {
+	      display: none;
+	    }
+
+	    .podcast-download {
+	      color: #0f598a;
+	      font-weight: 700;
+	      text-decoration: none;
+	      white-space: nowrap;
+	    }
+
+	    .podcast-download:hover {
+	      text-decoration: underline;
+	    }
+
+	    .podcast-progress-row {
+	      width: 100%;
+	      display: flex;
+	      gap: 12px;
+	      align-items: center;
+	      justify-content: center;
+	      margin-top: 6px;
+	    }
+
+	    .podcast-progress {
+	      flex: 1 1 auto;
+	      max-width: 520px;
+	      accent-color: #0f598a;
+	    }
+
+	    .podcast-time {
+	      font-variant-numeric: tabular-nums;
+	      font-size: 0.95rem;
+	      color: #334155;
+	      white-space: nowrap;
+	    }
+
+	    .ablation-table-wrap {
+	      width: 120%;
+	      margin: 1.5em 0 1.5em -10%;
+	      max-width: calc(100vw - 40px);
+	      box-sizing: border-box;
+	    }
+
+	    @media (max-width: 768px) {
+	      .ablation-table-wrap {
+	        width: 100%;
+	        margin: 1.5em 0;
+	        max-width: 100%;
+	        padding: 0 10px;
+	      }
+	    }
+
+	    .ablation-table-card {
+	      background: rgba(255, 255, 255, 0.95);
+	      border: 1px solid rgba(15, 89, 138, 0.12);
+	      border-radius: 14px;
+	      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+	      padding: 12px 12px 10px;
+	    }
+
+	    .ablation-table-title {
+	      font-weight: 900;
+	      color: #0f598a;
+	      margin: 2px 0 10px;
+	      font-size: 1rem;
+	    }
+
+	    .ablation-table {
+	      width: 100%;
+	      border-collapse: collapse;
+	      font-size: 0.92rem;
+	    }
+
+	    .ablation-table th,
+	    .ablation-table td {
+	      padding: 8px 8px;
+	      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	      vertical-align: top;
+	    }
+
+	    .ablation-table th {
+	      text-align: left;
+	      color: #334155;
+	      font-weight: 800;
+	      background: rgba(248, 250, 252, 0.9);
+	      border-bottom: 1px solid rgba(0, 0, 0, 0.10);
+	    }
+
+	    .ablation-table td:nth-child(n+2),
+	    .ablation-table th:nth-child(n+2) {
+	      text-align: right;
+	      font-variant-numeric: tabular-nums;
+	    }
+
+	    .ablation-table-note {
+	      margin: 10px 0 0;
+	      padding: 10px 10px;
+	      border-left: 4px solid #0f598a;
+	      border-radius: 10px;
+	      background: #f7faff;
+	      color: #334155;
+	      line-height: 1.45;
+	      font-size: 0.95rem;
+	    }
+
+	    .ablation-table-note i {
+	      color: #0f598a;
+	      margin-right: 6px;
+	    }
+	  </style>
+  </head>
+
+<body>
+  <div class="header-wrapper">
+    <div class="header-container" id="header-container">
+      <div class="header-content">
+        <h1 class="header-title" style="margin-top: 0px">
+          <img src="data/ntp_logo.png" class="paper-logo" alt="Name That Part logo">
+          <span>Name That Part:</span>
+        </h1>
+        <h2>3D Part Segmentation and Naming</h2>
+
+        <ul class="contrib-list">
+          <li class="contrib-item">
+            <span class="contrib-icon"><i class="fas fa-bolt"></i></span>
+            <span><strong style="color:#ffe099;">Fast one-shot feedforward </strong> named 3D part segmentation.</span>
+          </li>
+          <li class="contrib-item">
+            <span class="contrib-icon"><i class="fas fa-project-diagram"></i></span>
+            <span><strong style="color:#ffe099;">Set-level alignment</strong> of segmented parts to labels via differentiable matching.</span>
+          </li>
+          <li class="contrib-item">
+            <span class="contrib-icon"><i class="fas fa-tags"></i></span>
+            <span><strong style="color:#ffe099;">Open-vocabulary naming</strong> with affordance-aware descriptions and a unified 3D part ontology.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="header-image">
+        <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="header-video">
+          <source src="data/0001-0160.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
+	  <div class="byline-card">
+	    <div class="authors">
+	      <span class="joint-authors joint-cycle" data-joint-cycle="equal" data-joint-container="equal"
+	            tabindex="0" aria-label="Equal contribution authors (auto-swapping; hover to pause)">
+		        <span class="joint-author"><a class="author-link" href="https://mvp18.github.io" target="_blank" rel="noopener noreferrer">Soumava Paul<sup class="author-sup">*</sup></a>,&nbsp;</span>
+		        <span class="joint-author"><a class="author-link" href="https://toshi2k2.github.io" target="_blank" rel="noopener noreferrer">Prakhar Kaushik<sup class="author-sup">*‡</sup></a>,&nbsp;</span>
+	      </span>
+	      <span><a class="author-link" href="https://openreview.net/profile?id=~Ankit_Vaidya1" target="_blank" rel="noopener noreferrer">Ankit Vaidya</a>,&nbsp;</span>
+	      <span><a class="author-link" href="https://anandbhattad.github.io/" target="_blank" rel="noopener noreferrer">Anand Bhattad</a>,&nbsp;</span>
+	      <span><a class="author-link" href="https://www.cs.jhu.edu/~ayuille/" target="_blank" rel="noopener noreferrer">Alan Yuille</a></span>
+	    </div>
+
+    <div class="affiliations">
+      <p><span class="affiliation-link">Johns Hopkins University, Baltimore, MD, USA</span></p>
+    </div>
+
+    <p class="author-notes" style="margin: 0;">
+	      <span class="author-note"><sup class="author-sup">*</sup>Equal Contribution</span>
+	      <span class="author-note"><sup class="author-sup">‡</sup>Project Lead</span>
+    </p>
+
+    <p class="byline-desc">
+      ALIGN-Parts predicts a complete set of named 3D parts by aligning part-level representations (“Partlets”) to natural-language descriptions.
+    </p>
+
+	    <div class="button-container" style="text-align: center; margin-top: 10px;">
+	      <a class="button" href="#" onclick="return false;">
+	        <span class="icon"><i class="ai ai-arxiv"></i></span>
+	        <span>arXiv (soon)</span>
+	      </a>
+	      <a class="button" href="data/paper.pdf" target="_blank" rel="noopener noreferrer">
+	        <span class="icon"><i class="fas fa-file-pdf"></i></span>
+	        <span>Paper</span>
+	      </a>
+	      <a class="button" href="#" onclick="return false;">
+	        <span class="icon"><i class="fab fa-github"></i></span>
+	        <span>Code (soon)</span>
+	      </a>
+    </div>
+  </div>
+
+  <!-- TL;DR -->
+	  <div class="tldr-section">
+	    <div class="tldr-container">
+		      <div class="tldr-content">
+		        <div class="teaser-grid">
+		          <div class="teaser-video">
+		            <div class="video-legend" aria-hidden="true">
+		              <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
+		              <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
+		              <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Guns</div>
+		              <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Thrusters</div>
+		              <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Turret</div>
+		            </div>
+		            <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
+		              <source src="data/0001-0100.mp4" type="video/mp4">
+		              Your browser does not support the video tag.
+		            </video>
+		          </div>
+		          <div class="teaser-video">
+		            <div class="video-legend" aria-hidden="true">
+		              <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Casing</div>
+		              <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Dial Assembly</div>
+		              <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Handset</div>
+		              <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Wire</div>
+		              <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Handset Feet</div>
+		            </div>
+		            <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
+		              <source src="data/0001-0240.mp4" type="video/mp4">
+		              Your browser does not support the video tag.
+		            </video>
+		          </div>
+		        </div>
+
+	        <div style="display:flex; justify-content:center;">
+	          <img class="secondary-teaser-img" src="static/images/teaser.png" alt="Secondary teaser: named 3D part segmentation">
+	        </div>
+
+		        <div class="video-caption">
+		          <strong>TL;DR:</strong>
+		          We propose <strong>ALIGN-Parts</strong>, a fast, one-shot method for <strong>semantic 3D part segmentation and naming</strong>.
+		          ALIGN-Parts predicts a small set of shape-conditioned <em>partlets</em> (each a mask + text embedding) and matches them to
+		          natural-language part descriptions via bipartite alignment.
+		          By combining <strong>3D geometry</strong>, <strong>multi-view appearance</strong>, and <strong>LLM-generated affordance-aware</strong>
+		          descriptions, our model supports open-vocabulary part naming and serves as a scalable human-in-the-loop annotation engine.
+		        </div>
+
+		        <div class="podcast-card" role="group" aria-label="Podcast player">
+		          <div class="podcast-meta">
+		            <span class="podcast-label"><i class="fas fa-podcast"></i> Podcast</span>
+		            <span>
+		              Cool LLM podcast generated by
+		              <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer">NotebookLM</a>.
+		            </span>
+		          </div>
+			          <div style="display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;">
+			            <button class="podcast-toggle" type="button" data-audio-toggle data-audio-target="podcast-audio"
+			                    aria-controls="podcast-audio" aria-pressed="false">
+			              <i class="fas fa-play"></i>
+			              <span class="podcast-toggle-label">Play</span>
+			            </button>
+			            <a class="podcast-download" href="data/podcast.m4a">Download</a>
+			          </div>
+			          <div class="podcast-progress-row">
+			            <input class="podcast-progress" type="range" min="0" max="1" step="0.001" value="0"
+			                   data-audio-progress data-audio-target="podcast-audio" aria-label="Podcast seek bar">
+			            <span class="podcast-time" data-audio-time data-audio-target="podcast-audio">0:00 / 0:00</span>
+			          </div>
+			          <audio id="podcast-audio" class="podcast-audio" preload="metadata">
+			            <source src="data/podcast.m4a" type="audio/mp4">
+			            Your browser does not support the audio element.
+			          </audio>
+			        </div>
+		      </div>
+		    </div>
+		  </div>
+
+  <d-article>
+    <d-contents>
+      <nav>
+        <h4>Contents</h4>
+        <div class="nav-section"><a href="#motivation">Motivation</a></div>
+        <div class="nav-section"><a href="#introduction">Introduction</a></div>
+        <div class="nav-section"><a href="#experiments">Experiments</a></div>
+        <div class="nav-section"><a href="#conclusion">Conclusion</a></div>
+        <div class="nav-section"><a href="#future-work">Future Work</a></div>
+        <div class="nav-section"><a href="#bibtex">BibTeX</a></div>
+      </nav>
+    </d-contents>
+
+    <h2 class="text" id="motivation">Motivation</h2>
+    <p class="text">
+      Many vision and graphics applications require <strong>3D parts</strong>, not just whole-object labels: robots must grasp handles,
+      and creators need editable, semantically meaningful components. This requires solving two problems at once:
+      <strong>segmenting parts</strong> and <strong>naming them</strong>.
+    </p>
+    <p class="text">
+      While part-annotated datasets exist, their label definitions are often inconsistent across sources, limiting robust training and evaluation.
+      Existing approaches typically cover only one side of the problem: segmentation-only models produce unnamed regions, while language-grounded
+      systems often retrieve one part at a time and fail to produce a complete named decomposition.
+    </p>
+
+    <h2 class="text" id="introduction">Introduction</h2>
+    <p class="text">
+      ALIGN-Parts reframes named 3D part segmentation as a <strong>set-to-set alignment</strong> problem. Instead of labeling each point
+      independently, we predict a small set of <em>partlets</em> - each partlet represents one part with (i) a soft segmentation mask over points
+      and (ii) a text embedding that can be matched to part descriptions. We then align predicted partlets to candidate descriptions via bipartite
+      matching, enforcing permutation consistency and allowing a <em>null</em> option so the number of parts can adapt per shape.
+    </p>
+    <p class="text">
+      To make partlets both geometrically separable and semantically meaningful, we fuse (1) geometry from a 3D part-field backbone,
+      (2) multi-view appearance features lifted onto 3D, and (3) semantic knowledge from LLM-generated, affordance-aware descriptions
+      (e.g., “the horizontal surface of a chair where a person sits”).
+    </p>
+
+    <div class="note-box">
+      Bare part names can be ambiguous across categories (e.g., “legs”).
+      ALIGN-Parts trains with LLM-generated <em>affordance-aware</em> descriptions (embedded with a sentence transformer) to disambiguate
+      part naming during set alignment.
+    </div>
+
+    <div class="responsive-image-container">
+      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+        <img src="static/images/pipeline.png" alt="ALIGN-Parts pipeline figure"
+             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+      </figure>
+      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+        <strong>ALIGN-Parts.</strong> Fuse geometry + appearance, learn part-level partlets, and align them to affordance-aware text embeddings for fast,
+        one-shot segmentation and naming.
+      </figcaption>
+    </div>
+
+    <details class="details-box">
+      <summary>Training losses</summary>
+      <div class="details-body">
+        <p>
+          <strong>Setup &amp; notation.</strong>
+          We represent a 3D shape as a point set $\mathcal{P}=\{\mathbf{x}_i\}_{i=1}^N$ (sampled from a mesh/point cloud).
+          The model predicts $K$ <em>Partlets</em>, each with mask logits $\mathbf{m}_k\in\mathbb{R}^{N}$ and a text embedding
+          $\hat{\mathbf{z}}_k\in\mathbb{R}^{d_t}$.
+          Ground-truth provides $A$ part masks $\mathbf{m}^{\mathrm{gt}}_a\in\{0,1\}^{N}$ with text embeddings
+          $\hat{\mathbf{t}}_a\in\mathbb{R}^{d_t}$.
+          A differentiable set matching (Sinkhorn) yields an assignment $\pi(k)\in\{1,\ldots,A\}\cup\{\emptyset\}$; let
+          $\mathcal{M}=\{k:\pi(k)\neq\emptyset\}$ denote matched Partlets.
+        </p>
+
+        <p><strong>Text alignment (InfoNCE).</strong> Makes Partlet embeddings nameable by pulling matched (Partlet, text) pairs together and pushing others apart.</p>
+        <div class="equation-block">
+          $$
+          \mathcal{L}_{\text{text}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+          -\log\frac{\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_{\pi(k)}/\tau)}
+          {\sum_{a=1}^{A}\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_a/\tau)}
+          $$
+        </div>
+
+        <p><strong>Mask supervision (BCE + Dice).</strong> Encourages accurate part boundaries and robust overlap with ground-truth parts.</p>
+        <div class="equation-block">
+          $$
+          \mathcal{L}_{\text{mask}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+          \Big[\mathrm{BCE}(\mathbf{m}_k,\mathbf{m}^{\mathrm{gt}}_{\pi(k)})
+          +\big(1-\mathrm{Dice}(\sigma(\mathbf{m}_k),\mathbf{m}^{\mathrm{gt}}_{\pi(k)})\big)\Big]
+          $$
+        </div>
+
+        <p><strong>Partness loss.</strong> Learns when a Partlet should be “active” vs. “no-part”, enabling variable part counts.</p>
+        <div class="equation-block">
+          $$
+          \mathcal{L}_{\text{part}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{BCE}(\text{part}_k,\mathbf{1}[\pi(k)\neq\emptyset])
+          $$
+        </div>
+
+        <p><strong>Regularizers.</strong> Reduce over/under-segmentation and prevent multiple Partlets from claiming the same points.</p>
+        <div class="equation-block">
+          $$
+          \mathcal{L}_{\text{cov}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+          \left|\frac{\sum_i \sigma(m_{ki})-\sum_i m^{\mathrm{gt}}_{\pi(k)i}}{N}\right|
+          \qquad
+          \mathcal{L}_{\text{overlap}}=\frac{1}{N}\sum_{i=1}^{N}\Big(\sum_{k=1}^{K}\sigma(m_{ki})-1\Big)^2
+          $$
+        </div>
+
+        <p><strong>Total objective.</strong> A weighted sum of the above terms (plus an auxiliary global alignment loss):</p>
+        <div class="equation-block">
+          $$
+          \mathcal{L}_{\text{total}}=
+          \lambda_{\text{mask}}\mathcal{L}_{\text{mask}}+
+          \lambda_{\text{part}}\mathcal{L}_{\text{part}}+
+          \lambda_{\text{text}}\mathcal{L}_{\text{text}}+
+          \lambda_{\text{cov}}\mathcal{L}_{\text{cov}}+
+          \lambda_{\text{ov}}\mathcal{L}_{\text{overlap}}
+          $$
+        </div>
+      </div>
+    </details>
+
+	    <h2 class="text" id="experiments">Experiments</h2>
+	    <p class="text">
+	      We evaluate ALIGN-Parts on named 3D part segmentation across <strong>3DCoMPaT++</strong>, <strong>PartNet</strong>, and <strong>Find3D</strong>,
+	      using class-agnostic segmentation (mIoU) and two <strong>label-aware</strong> metrics - <strong>LA-mIoU</strong> (strict) and <strong>rLA-mIoU</strong>
+	      (relaxed) - that measure whether predicted parts are named correctly. ALIGN-Parts outperforms strong baselines while avoiding slow, post-hoc clustering,
+	      yielding ~100× faster inference.
+	    </p>
+	    <p class="text">
+	      We also align heterogeneous taxonomies via a two-stage pipeline (embedding similarity + LLM validation), enabling unified training on consistent
+	      part semantics and supporting scalable annotation with human verification.
+	    </p>
+	    <p class="text">
+	      <strong>Metrics.</strong>
+	      mIoU evaluates geometric segmentation quality while ignoring part names.
+	      LA-mIoU assigns IoU credit only when the predicted part name <em>exactly</em> matches the ground-truth label.
+	      rLA-mIoU softens strict matching by weighting IoU using cosine similarity between MPNet text embeddings of predicted and ground-truth names
+	      (e.g., “screen” vs. “monitor”), making evaluation robust to near-synonyms.
+	      By construction, mIoU $\ge$ rLA-mIoU $\ge$ LA-mIoU.
+	    </p>
+	    <p class="text" style="margin-top: 0.75em;">
+	      <span style="display:inline-flex; align-items:center; gap:10px; font-weight: 800; color: #0f598a;">
+	        <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
+	        <span>Interactive segmentation demos (coming soon)</span>
+	      </span>
+	    </p>
+
+    <div class="callout">
+      <div class="callout-icon"><i class="far fa-lightbulb"></i></div>
+      <div>
+        <div class="callout-title">Observation</div>
+        <div class="callout-body">
+          ALIGN-Parts improves both geometry and naming while being one-shot: +15.8% average mIoU over PartField and +58.8% LA-mIoU / +43.8% rLA-mIoU over PartField+MPNet - while running ~0.05s per shape vs ~4s for clustering baselines (~100× faster).
+        </div>
+      </div>
+    </div>
+
+	    <div class="callout">
+	      <div class="callout-icon"><i class="far fa-lightbulb"></i></div>
+	      <div>
+	        <div class="callout-title">Remark</div>
+	        <div class="callout-body">
+	          Strict label matching can undercount near-synonyms: rLA-mIoU tracks class-agnostic mIoU almost perfectly (Pearson r=0.978 vs 0.739 for strict LA-mIoU), suggesting remaining errors are mostly semantic near-misses rather than geometric failures.
+	        </div>
+	      </div>
+	    </div>
+
+	    <div class="callout">
+	      <div class="callout-icon"><i class="far fa-lightbulb"></i></div>
+	      <div>
+	        <div class="callout-title">Insight</div>
+	        <div class="callout-body">
+	          Clustering-based baselines struggle with completeness and fine parts: PartField requires ground-truth part counts and often fragments a single semantic part into multiple clusters, while Find3D can be noisy and may fail even with provided part queries. ALIGN-Parts avoids post-hoc clustering by predicting a complete set of named parts in one feed-forward pass, improving fine-part localization and grouping repeated instances consistently with human annotations.
+	        </div>
+	      </div>
+	    </div>
+
+    <div class="responsive-image-container">
+      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+        <img src="static/images/qualitative.png" alt="Main qualitative results figure"
+             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+      </figure>
+      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+        <strong>Qualitative results.</strong> ALIGN-Parts segments and names a complete set of parts in a single forward pass. Compared to Find3D and PartField,
+        it better recovers fine parts (e.g., handles) and avoids fragmented clustering.
+      </figcaption>
+    </div>
+
+	    <div class="responsive-image-container">
+	      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+	        <img src="static/images/ablation.png" alt="Ablation qualitative results figure"
+	             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+	      </figure>
+	      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+	        <strong>Ablation (qualitative).</strong> Results improve left-to-right as components are added; major gains come from Partlets and the coverage/overlap regularizers, which reduce leakage and misalignment.
+	      </figcaption>
+	    </div>
+
+	    <div class="ablation-table-wrap">
+	      <div class="ablation-table-card">
+	        <div class="ablation-table-title">Ablation (performance averaged across 3 datasets)</div>
+	        <table class="ablation-table" aria-label="Ablation table (average performance)">
+	          <thead>
+	            <tr>
+	              <th>Variant</th>
+	              <th>mIoU↑</th>
+	              <th>LA-mIoU↑</th>
+	              <th>rLA-mIoU↑</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr><td>Base model</td><td>0.312</td><td>0.030</td><td>0.194</td></tr>
+	            <tr><td>No $\mathcal{L}_{\text{cov}},\mathcal{L}_{\text{ov}},\mathcal{L}_{\text{txt}}$</td><td>0.324</td><td>0.021</td><td>0.187</td></tr>
+	            <tr><td>No $\mathcal{L}_{\text{cov}},\mathcal{L}_{\text{ov}}$</td><td>0.528</td><td>0.239</td><td>0.443</td></tr>
+	            <tr><td>Geo input only</td><td>0.313</td><td>0.027</td><td>0.177</td></tr>
+	            <tr><td>Feature concat</td><td>0.302</td><td>0.036</td><td>0.189</td></tr>
+	            <tr><td>PartField+MPNet</td><td>0.451</td><td>0.199</td><td>0.368</td></tr>
+	            <tr><td><strong>ALIGN-Parts</strong></td><td><strong>0.600</strong></td><td><strong>0.316</strong></td><td><strong>0.529</strong></td></tr>
+	          </tbody>
+	        </table>
+	        <p class="ablation-table-note">
+	          <i class="far fa-lightbulb"></i>
+	          <strong>$\mathcal{L}_{\text{txt}}$ is crucial for naming.</strong>
+	          Removing it collapses label-aware accuracy (Avg LA-mIoU 0.239→0.021; Avg rLA-mIoU 0.443→0.187), even before adding regularizers.
+	        </p>
+	      </div>
+	    </div>
+
+    <div class="responsive-image-container">
+      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+        <img src="static/images/fineparts.png" alt="Fine-part localization figure"
+             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+      </figure>
+      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+        <strong>Fine-part localization.</strong> ALIGN-Parts correctly segments tiny parts (e.g., a scissors screw) despite training with sparse point samples (10k points).
+      </figcaption>
+    </div>
+
+    <div class="responsive-image-container">
+      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+        <img src="static/images/texparts.png" alt="TexParts dataset figure"
+             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+      </figure>
+      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+        <strong>TexParts dataset.</strong> Using ALIGN-Parts for human-in-the-loop annotation on TexVerse yields scalable dense part segmentation with 5–8× less human effort than manual labeling.
+      </figcaption>
+    </div>
+
+    <h2 class="text" id="conclusion">Conclusion</h2>
+    <p class="text">
+      ALIGN-Parts directly predicts a complete set of <em>named</em> 3D parts by aligning part-level representations to language, avoiding brittle
+      part-count supervision and expensive clustering. Affordance-aware descriptions help disambiguate ambiguous part names and improve fine-part
+      localization, enabling a practical tool for scalable 3D part annotation.
+    </p>
+
+    <h2 class="text" id="future-work">Future Work</h2>
+    <p class="text">
+      Limitations include robustness to noisy real-world scans, distribution shift for confidence calibration, and open-vocabulary generalization beyond
+      categories similar to training data. Promising directions include extending to articulated objects and integrating part-level alignment into 3D
+      foundation models for manipulation and generation.
+    </p>
+
+    <h2 class="text" id="bibtex">BibTeX</h2>
+    <pre class="text"><code class="language-bibtex"></code></pre>
+  </d-article>
+
+  <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+      <p style="font-size: 0.95rem; color: #666; margin: 0;">
+        This project page template is adapted from <a href="https://blenderfusion.github.io/" target="_blank" rel="noopener noreferrer">BlenderFusion</a>, thanks for the beautiful template!
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Adapted from BlenderFusion for smart navigation positioning.
+    function initializeNavigation() {
+      const nav = document.querySelector('d-article d-contents');
+      if (!nav) return;
+
+      let isInitialized = false;
+
+      function showNav() {
+        if (isInitialized) return;
+        nav.style.opacity = '1';
+        nav.style.visibility = 'visible';
+        isInitialized = true;
+      }
+
+      function updateNavPosition() {
+        const byline = document.querySelector('.byline-card');
+        const scrollY = window.scrollY || 0;
+
+        // Default "resting" offset.
+        let targetOffset = 20;
+
+        if (byline) {
+          const bylineRect = byline.getBoundingClientRect();
+          const headerEndFromTop = bylineRect.bottom + scrollY;
+
+          // While we're still above the byline-card end, push the nav down.
+          if (scrollY < headerEndFromTop - 20) {
+            targetOffset = headerEndFromTop - scrollY + 20;
+          }
+        }
+
+        nav.style.transform = `translateY(${targetOffset}px)`;
+        showNav();
+      }
+
+      updateNavPosition();
+      window.addEventListener('scroll', updateNavPosition);
+      window.addEventListener('resize', updateNavPosition);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeNavigation);
+    } else {
+      initializeNavigation();
+    }
+
+    setTimeout(initializeNavigation, 10);
+    setTimeout(initializeNavigation, 100);
+  </script>
+</body>
+</html>
