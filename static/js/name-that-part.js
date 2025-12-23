@@ -205,3 +205,35 @@
     syncAll();
   });
 })();
+
+(() => {
+  const containers = document.querySelectorAll("[data-legend-start]");
+  if (!containers.length) return;
+
+  containers.forEach((container) => {
+    const legendStart = Number.parseFloat(container.getAttribute("data-legend-start"));
+    if (!Number.isFinite(legendStart)) return;
+
+    const video = container.querySelector("video");
+    const legend = container.querySelector(".video-legend[data-timed-legend]");
+    if (!(video instanceof HTMLVideoElement) || !(legend instanceof HTMLElement)) return;
+
+    let isVisible = false;
+
+    const update = () => {
+      const shouldShow = video.currentTime >= legendStart;
+      if (shouldShow === isVisible) return;
+      isVisible = shouldShow;
+      legend.classList.toggle("is-visible", shouldShow);
+      container.classList.toggle("is-legend-visible", shouldShow);
+    };
+
+    video.addEventListener("loadedmetadata", update);
+    video.addEventListener("timeupdate", update);
+    video.addEventListener("seeked", update);
+    video.addEventListener("play", update);
+    video.addEventListener("pause", update);
+
+    update();
+  });
+})();

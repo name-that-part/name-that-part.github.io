@@ -106,71 +106,156 @@
       line-height: 1.5;
     }
 
-    .teaser-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      align-items: start;
-    }
+		    .tldr-teaser-layout {
+		      width: 100%;
+		      display: grid;
+		      gap: 16px;
+		      align-items: start;
+		    }
 
-	    @media (max-width: 900px) {
-	      .teaser-grid {
-	        grid-template-columns: 1fr;
-	      }
-	    }
+		    .tldr-teaser-row {
+		      width: 100%;
+		      display: grid;
+		      grid-template-columns: repeat(2, minmax(0, 1fr));
+		      gap: 16px;
+		      align-items: start;
+		    }
 
-	    .teaser-video {
-	      position: relative;
+		    .tldr-teaser-row.tldr-teaser-row--mixed {
+		      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+		    }
+
+		    @media (max-width: 900px) {
+		      .tldr-teaser-row {
+		        grid-template-columns: 1fr;
+		      }
+		    }
+
+		    .teaser-video {
+		      position: relative;
+		      width: 100%;
+		    }
+
+		    .tldr-demo {
+		      display: grid;
+		      grid-template-columns: 0 minmax(0, 1fr);
+		      gap: 0;
+		      align-items: start;
+		      transition: grid-template-columns 0.25s ease, gap 0.25s ease;
+		    }
+
+		    .tldr-demo.is-legend-visible {
+		      grid-template-columns: 128px minmax(0, 1fr);
+		      gap: 10px;
+		    }
+
+		    @media (max-width: 900px) {
+		      .tldr-demo {
+		        grid-template-columns: 1fr;
+		        gap: 0;
+		      }
+		    }
+
+		    .demo-video {
+		      width: 100%;
+		      height: auto;
+		      border-radius: 12px;
+		      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+		      background: #000;
+		      display: block;
+		    }
+
+		    .tldr-figure {
+		      display: flex;
+		      justify-content: center;
+		      align-items: center;
+		    }
+
+		    .video-legend {
+		      display: flex;
+		      flex-direction: column;
+		      gap: 6px;
+		      padding: 10px 10px;
+		      background: rgba(255, 255, 255, 0.82);
+		      border: 1px solid rgba(0, 0, 0, 0.08);
+		      border-radius: 12px;
+		      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+		      backdrop-filter: blur(6px);
+		      pointer-events: none;
+		    }
+
+		    .video-legend.video-legend--overlay {
+		      position: absolute;
+		      top: 10px;
+		      left: 10px;
+		    }
+
+		    .video-legend.video-legend--side {
+		      padding: 8px 8px;
+		      border-radius: 10px;
+		      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+		      background: rgba(255, 255, 255, 0.70);
+		      min-width: 0;
+		      overflow: hidden;
+		      align-self: start;
+		      justify-self: start;
+		    }
+
+		    .video-legend[data-timed-legend] {
+		      opacity: 0;
+		      visibility: hidden;
+		      transform: translateY(-4px);
+		      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+		    }
+
+		    .video-legend[data-timed-legend].is-visible {
+		      opacity: 1;
+		      visibility: visible;
+		      transform: translateY(0);
+		    }
+
+		    .legend-item {
+		      display: flex;
+		      align-items: center;
+		      gap: 8px;
+		      line-height: 1.1;
+		      font-size: 0.95rem;
+		      font-weight: 800;
+		      color: var(--legend-color);
+		      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+		      white-space: nowrap;
+		    }
+
+		    .video-legend.video-legend--side .legend-item {
+		      gap: 6px;
+		      font-size: 0.78rem;
+		      line-height: 1.05;
+		    }
+
+		    .legend-swatch {
+		      width: 11px;
+		      height: 11px;
+		      border-radius: 4px;
+		      background: var(--legend-color);
+		      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+		      flex: 0 0 auto;
+		    }
+
+		    .video-legend.video-legend--side .legend-swatch {
+		      width: 9px;
+		      height: 9px;
+		      border-radius: 3px;
+		    }
+
+	    .secondary-teaser-img {
 	      width: 100%;
-	    }
-
-	    .video-legend {
-	      position: absolute;
-	      top: 10px;
-	      left: 10px;
-	      display: flex;
-	      flex-direction: column;
-	      gap: 6px;
-	      padding: 10px 10px;
-	      background: rgba(255, 255, 255, 0.82);
-	      border: 1px solid rgba(0, 0, 0, 0.08);
+	      max-width: 650px;
+	      height: auto;
 	      border-radius: 12px;
-	      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-	      backdrop-filter: blur(6px);
-	      pointer-events: none;
+	      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+	      background: #fff;
+	      display: block;
 	    }
-
-	    .legend-item {
-	      display: flex;
-	      align-items: center;
-	      gap: 8px;
-	      line-height: 1.1;
-	      font-size: 0.95rem;
-	      font-weight: 800;
-	      color: var(--legend-color);
-	      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-	      white-space: nowrap;
-	    }
-
-	    .legend-swatch {
-	      width: 11px;
-	      height: 11px;
-	      border-radius: 4px;
-	      background: var(--legend-color);
-	      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
-	      flex: 0 0 auto;
-	    }
-
-    .secondary-teaser-img {
-      width: 85%;
-      max-width: 900px;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-      background: #fff;
-      display: block;
-    }
 
     @media (max-width: 768px) {
       .secondary-teaser-img {
@@ -460,12 +545,22 @@
 	      font-size: 0.95rem;
 	    }
 
-	    .ablation-table-note i {
-	      color: #0f598a;
-	      margin-right: 6px;
-	    }
-	  </style>
-  </head>
+		    .ablation-table-note i {
+		      color: #0f598a;
+		      margin-right: 6px;
+		    }
+
+		    .mathcalL {
+		      font-family: "STIX Two Math", "Cambria Math", "Times New Roman", serif;
+		      font-weight: 700;
+		    }
+
+		    .math-sub {
+		      font-size: 0.75em;
+		      vertical-align: -0.15em;
+		    }
+		  </style>
+	  </head>
 
 <body>
   <div class="header-wrapper">
@@ -497,12 +592,24 @@
 	        </ul>
 	      </div>
 
-      <div class="header-image">
-        <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="header-video">
-          <source src="data/0001-0160.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
+	      <div class="header-image">
+		        <div class="teaser-video" data-legend-start="2.5">
+		          <div class="video-legend video-legend--overlay" data-timed-legend aria-hidden="true">
+	            <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
+	            <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
+	            <div class="legend-item" style="--legend-color:#c47a2c;"><span class="legend-swatch"></span>Guns</div>
+	            <div class="legend-item" style="--legend-color:#af52de;"><span class="legend-swatch"></span>Landing gear</div>
+	            <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Missiles</div>
+	            <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Propeller</div>
+	            <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Tail</div>
+	            <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Wings</div>
+	          </div>
+	          <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="header-video">
+	            <source src="data/teaser_combined.mp4" type="video/mp4">
+	            Your browser does not support the video tag.
+	          </video>
+	        </div>
+	      </div>
     </div>
   </div>
 
@@ -513,7 +620,7 @@
 		        <span class="joint-author"><a class="author-link" href="https://mvp18.github.io" target="_blank" rel="noopener noreferrer">Soumava Paul<sup class="author-sup">*</sup></a>,&nbsp;</span>
 		        <span class="joint-author"><a class="author-link" href="https://toshi2k2.github.io" target="_blank" rel="noopener noreferrer">Prakhar Kaushik<sup class="author-sup">*‡</sup></a>,&nbsp;</span>
 	      </span>
-	      <span><a class="author-link" href="https://openreview.net/profile?id=~Ankit_Vaidya1" target="_blank" rel="noopener noreferrer">Ankit Vaidya</a>,&nbsp;</span>
+		      <span><a class="author-link" href="https://www.linkedin.com/in/ankit-vaidya-9a668a1b0/?originalSubdomain=in" target="_blank" rel="noopener noreferrer">Ankit Vaidya</a>,&nbsp;</span>
 	      <span><a class="author-link" href="https://anandbhattad.github.io/" target="_blank" rel="noopener noreferrer">Anand Bhattad</a>,&nbsp;</span>
 	      <span><a class="author-link" href="https://www.cs.jhu.edu/~ayuille/" target="_blank" rel="noopener noreferrer">Alan Yuille</a></span>
 	    </div>
@@ -532,9 +639,9 @@
     </p>
 
 	    <div class="button-container" style="text-align: center; margin-top: 10px;">
-	      <a class="button" href="#" onclick="return false;">
+	      <a class="button" href="https://arxiv.org/abs/2512.18003" onclick="return false;">
 	        <span class="icon"><i class="ai ai-arxiv"></i></span>
-	        <span>arXiv (soon)</span>
+	        <span>arXiv</span>
 	      </a>
 	      <a class="button" href="data/paper.pdf" target="_blank" rel="noopener noreferrer">
 	        <span class="icon"><i class="fas fa-file-pdf"></i></span>
@@ -559,38 +666,57 @@
 	  <div class="tldr-section">
 	    <div class="tldr-container">
 		      <div class="tldr-content">
-		        <div class="teaser-grid">
-		          <div class="teaser-video">
-		            <div class="video-legend" aria-hidden="true">
-		              <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
-		              <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
-		              <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Guns</div>
-		              <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Thrusters</div>
-		              <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Turret</div>
-		            </div>
-		            <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
-		              <source src="data/0001-0100.mp4" type="video/mp4">
-		              Your browser does not support the video tag.
-		            </video>
-		          </div>
-		          <div class="teaser-video">
-		            <div class="video-legend" aria-hidden="true">
-		              <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Casing</div>
-		              <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Dial Assembly</div>
-		              <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Handset</div>
-		              <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Wire</div>
-		              <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Handset Feet</div>
-		            </div>
-		            <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
-		              <source src="data/0001-0240.mp4" type="video/mp4">
-		              Your browser does not support the video tag.
-		            </video>
-		          </div>
-		        </div>
+				        <div class="tldr-teaser-layout">
+				          <div class="tldr-teaser-row">
+				              <div class="tldr-demo" data-legend-start="2.5">
+				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
+				                  <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
+				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
+				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Guns</div>
+				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Thrusters</div>
+				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Turret</div>
+				                </div>
+				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
+				                  <source src="data/spaceship_combined.mp4" type="video/mp4">
+				                  Your browser does not support the video tag.
+				                </video>
+				              </div>
 
-	        <div style="display:flex; justify-content:center;">
-	          <img class="secondary-teaser-img" src="static/images/teaser.png" alt="Secondary teaser: named 3D part segmentation">
-	        </div>
+				              <div class="tldr-demo" data-legend-start="2.5">
+				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
+				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Casing</div>
+				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Dial Assembly</div>
+				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Handset</div>
+				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Wire</div>
+				                  <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Handset Feet</div>
+				                </div>
+				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
+				                  <source src="data/telephone_combined.mp4" type="video/mp4">
+				                  Your browser does not support the video tag.
+				                </video>
+				              </div>
+				          </div>
+
+				          <div class="tldr-teaser-row tldr-teaser-row--mixed">
+				              <div class="tldr-demo" data-legend-start="2.5">
+				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
+				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Cap</div>
+				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Bristles</div>
+				                  <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Toothbrush</div>
+				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Toothpaste</div>
+				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Tube</div>
+				                </div>
+				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
+				                  <source src="data/toothpaste_combined.mp4" type="video/mp4">
+				                  Your browser does not support the video tag.
+				                </video>
+				              </div>
+
+				              <div class="tldr-figure">
+				                <img class="secondary-teaser-img" src="static/images/teaser.png" alt="Secondary teaser: named 3D part segmentation">
+				              </div>
+				          </div>
+				        </div>
 
 		        <div class="video-caption">
 		          <strong>TL;DR:</strong>
@@ -702,49 +828,49 @@
 
         <p><strong>Text alignment (InfoNCE).</strong> Makes Partlet embeddings nameable by pulling matched (Partlet, text) pairs together and pushing others apart.</p>
         <div class="equation-block">
-          $$
-          \mathcal{L}_{\text{text}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
-          -\log\frac{\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_{\pi(k)}/\tau)}
-          {\sum_{a=1}^{A}\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_a/\tau)}
-          $$
+	          $$
+	          ℒ_{\text{text}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+	          -\log\frac{\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_{\pi(k)}/\tau)}
+	          {\sum_{a=1}^{A}\exp(\hat{\mathbf{z}}_k\cdot\hat{\mathbf{t}}_a/\tau)}
+	          $$
         </div>
 
         <p><strong>Mask supervision (BCE + Dice).</strong> Encourages accurate part boundaries and robust overlap with ground-truth parts.</p>
         <div class="equation-block">
-          $$
-          \mathcal{L}_{\text{mask}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
-          \Big[\mathrm{BCE}(\mathbf{m}_k,\mathbf{m}^{\mathrm{gt}}_{\pi(k)})
-          +\big(1-\mathrm{Dice}(\sigma(\mathbf{m}_k),\mathbf{m}^{\mathrm{gt}}_{\pi(k)})\big)\Big]
-          $$
+	          $$
+	          ℒ_{\text{mask}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+	          \Big[\mathrm{BCE}(\mathbf{m}_k,\mathbf{m}^{\mathrm{gt}}_{\pi(k)})
+	          +\big(1-\mathrm{Dice}(\sigma(\mathbf{m}_k),\mathbf{m}^{\mathrm{gt}}_{\pi(k)})\big)\Big]
+	          $$
         </div>
 
         <p><strong>Partness loss.</strong> Learns when a Partlet should be “active” vs. “no-part”, enabling variable part counts.</p>
         <div class="equation-block">
-          $$
-          \mathcal{L}_{\text{part}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{BCE}(\text{part}_k,\mathbf{1}[\pi(k)\neq\emptyset])
-          $$
+	          $$
+	          ℒ_{\text{part}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{BCE}(\text{part}_k,\mathbf{1}[\pi(k)\neq\emptyset])
+	          $$
         </div>
 
         <p><strong>Regularizers.</strong> Reduce over/under-segmentation and prevent multiple Partlets from claiming the same points.</p>
         <div class="equation-block">
-          $$
-          \mathcal{L}_{\text{cov}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
-          \left|\frac{\sum_i \sigma(m_{ki})-\sum_i m^{\mathrm{gt}}_{\pi(k)i}}{N}\right|
-          \qquad
-          \mathcal{L}_{\text{overlap}}=\frac{1}{N}\sum_{i=1}^{N}\Big(\sum_{k=1}^{K}\sigma(m_{ki})-1\Big)^2
-          $$
+	          $$
+	          ℒ_{\text{cov}}=\frac{1}{|\mathcal{M}|}\sum_{k\in\mathcal{M}}
+	          \left|\frac{\sum_i \sigma(m_{ki})-\sum_i m^{\mathrm{gt}}_{\pi(k)i}}{N}\right|
+	          \qquad
+	          ℒ_{\text{overlap}}=\frac{1}{N}\sum_{i=1}^{N}\Big(\sum_{k=1}^{K}\sigma(m_{ki})-1\Big)^2
+	          $$
         </div>
 
         <p><strong>Total objective.</strong> A weighted sum of the above terms (plus an auxiliary global alignment loss):</p>
         <div class="equation-block">
-          $$
-          \mathcal{L}_{\text{total}}=
-          \lambda_{\text{mask}}\mathcal{L}_{\text{mask}}+
-          \lambda_{\text{part}}\mathcal{L}_{\text{part}}+
-          \lambda_{\text{text}}\mathcal{L}_{\text{text}}+
-          \lambda_{\text{cov}}\mathcal{L}_{\text{cov}}+
-          \lambda_{\text{ov}}\mathcal{L}_{\text{overlap}}
-          $$
+	          $$
+	          ℒ_{\text{total}}=
+	          \lambda_{\text{mask}}ℒ_{\text{mask}}+
+	          \lambda_{\text{part}}ℒ_{\text{part}}+
+	          \lambda_{\text{text}}ℒ_{\text{text}}+
+	          \lambda_{\text{cov}}ℒ_{\text{cov}}+
+	          \lambda_{\text{ov}}ℒ_{\text{overlap}}
+	          $$
         </div>
       </div>
     </details>
@@ -840,8 +966,8 @@
 	          </thead>
 	          <tbody>
 	            <tr><td>Base model</td><td>0.312</td><td>0.030</td><td>0.194</td></tr>
-	            <tr><td>No $\mathcal{L}_{\text{cov}},\mathcal{L}_{\text{ov}},\mathcal{L}_{\text{txt}}$</td><td>0.324</td><td>0.021</td><td>0.187</td></tr>
-	            <tr><td>No $\mathcal{L}_{\text{cov}},\mathcal{L}_{\text{ov}}$</td><td>0.528</td><td>0.239</td><td>0.443</td></tr>
+	            <tr><td>No <span class="mathcalL">ℒ</span><sub class="math-sub">cov</sub>, <span class="mathcalL">ℒ</span><sub class="math-sub">ov</sub>, <span class="mathcalL">ℒ</span><sub class="math-sub">txt</sub></td><td>0.324</td><td>0.021</td><td>0.187</td></tr>
+	            <tr><td>No <span class="mathcalL">ℒ</span><sub class="math-sub">cov</sub>, <span class="mathcalL">ℒ</span><sub class="math-sub">ov</sub></td><td>0.528</td><td>0.239</td><td>0.443</td></tr>
 	            <tr><td>Geo input only</td><td>0.313</td><td>0.027</td><td>0.177</td></tr>
 	            <tr><td>Feature concat</td><td>0.302</td><td>0.036</td><td>0.189</td></tr>
 	            <tr><td>PartField+MPNet</td><td>0.451</td><td>0.199</td><td>0.368</td></tr>
@@ -850,7 +976,7 @@
 	        </table>
 	        <p class="ablation-table-note">
 	          <i class="far fa-lightbulb"></i>
-	          <strong>$\mathcal{L}_{\text{txt}}$ is crucial for naming.</strong>
+	          <strong><span class="mathcalL">ℒ</span><sub class="math-sub">txt</sub> is crucial for naming.</strong>
 	          Removing it collapses label-aware accuracy (Avg LA-mIoU 0.239→0.021; Avg rLA-mIoU 0.443→0.187), even before adding regularizers.
 	        </p>
 	      </div>
@@ -891,6 +1017,15 @@
     </p>
 
     <h2 class="text" id="bibtex">BibTeX</h2>
+    <pre style="margin: 0; overflow-x: auto; line-height: 1.4; color: #2c3e50;"><code>@misc{paul2025part3dsegmentationnaming,
+      title={Name That Part: 3D Part Segmentation and Naming}, 
+      author={Soumava Paul and Prakhar Kaushik and Ankit Vaidya and Anand Bhattad and Alan Yuille},
+      year={2025},
+      eprint={2512.18003},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2512.18003}, 
+    }</code></pre>
     <pre class="text"><code class="language-bibtex"></code></pre>
   </d-article>
 
