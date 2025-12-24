@@ -207,6 +207,89 @@
 })();
 
 (() => {
+  const pairs = document.querySelectorAll("[data-video-sync-pair]");
+  if (!pairs.length) return;
+
+  const minPlaybackRate = 0.5;
+  const maxPlaybackRate = 2.0;
+
+  const safePlay = (video) => {
+    const maybePromise = video.play();
+    if (maybePromise && typeof maybePromise.catch === "function") {
+      maybePromise.catch(() => {});
+    }
+  };
+
+  const hasFiniteDuration = (video) =>
+    Number.isFinite(video.duration) && video.duration > 0;
+
+  const computeTargetDuration = (durationA, durationB) => {
+    const rangeA = [durationA / maxPlaybackRate, durationA / minPlaybackRate];
+    const rangeB = [durationB / maxPlaybackRate, durationB / minPlaybackRate];
+    const low = Math.max(rangeA[0], rangeB[0]);
+    const high = Math.min(rangeA[1], rangeB[1]);
+
+    let target = Math.max(durationA, durationB);
+    if (low <= high) {
+      target = Math.min(target, high);
+      target = Math.max(target, low);
+    }
+    return target;
+  };
+
+  pairs.forEach((pair) => {
+    const mesh = pair.querySelector('video[data-sync-role="mesh"]');
+    const seg = pair.querySelector('video[data-sync-role="seg"]');
+    if (!(mesh instanceof HTMLVideoElement) || !(seg instanceof HTMLVideoElement)) return;
+
+    const state = { configured: false, restarting: false };
+
+    const restartTogether = () => {
+      if (state.restarting) return;
+      state.restarting = true;
+
+      mesh.pause();
+      seg.pause();
+      try {
+        mesh.currentTime = 0;
+        seg.currentTime = 0;
+      } catch {
+        // Ignore seeking errors until the media is ready.
+      }
+      safePlay(mesh);
+      safePlay(seg);
+
+      window.setTimeout(() => {
+        state.restarting = false;
+      }, 50);
+    };
+
+    const configure = () => {
+      if (state.configured) return;
+      if (!hasFiniteDuration(mesh) || !hasFiniteDuration(seg)) return;
+
+      const targetDuration = computeTargetDuration(mesh.duration, seg.duration);
+      mesh.playbackRate = mesh.duration / targetDuration;
+      seg.playbackRate = seg.duration / targetDuration;
+      state.configured = true;
+
+      restartTogether();
+    };
+
+    mesh.loop = false;
+    seg.loop = false;
+
+    mesh.addEventListener("loadedmetadata", configure);
+    seg.addEventListener("loadedmetadata", configure);
+
+    mesh.addEventListener("ended", restartTogether);
+    seg.addEventListener("ended", restartTogether);
+
+    configure();
+  });
+})();
+
+(() => {
   const containers = document.querySelectorAll("[data-legend-start]");
   if (!containers.length) return;
 

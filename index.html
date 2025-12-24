@@ -106,17 +106,63 @@
       line-height: 1.5;
     }
 
-		    .tldr-teaser-layout {
-		      width: 100%;
-		      display: grid;
-		      gap: 16px;
-		      align-items: start;
-		    }
+			    .tldr-teaser-layout {
+			      width: 100%;
+			      display: grid;
+			      gap: 16px;
+			      align-items: start;
+			    }
 
-		    .tldr-teaser-row {
-		      width: 100%;
-		      display: grid;
-		      grid-template-columns: repeat(2, minmax(0, 1fr));
+          .tldr-video-pair-row {
+            width: 100%;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 104px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+          }
+
+          .tldr-video-cell {
+            width: 100%;
+          }
+
+          .tldr-ntp-spacer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .tldr-ntp-logo {
+            width: 80px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.18));
+            user-select: none;
+          }
+
+          .tldr-figure.tldr-figure--teaser-row {
+            padding-top: 4px;
+          }
+
+          .secondary-teaser-img.secondary-teaser-img--row {
+            width: 92%;
+            max-width: 900px;
+          }
+
+          @media (max-width: 900px) {
+            .tldr-video-pair-row {
+              grid-template-columns: 1fr;
+              gap: 12px;
+            }
+
+            .tldr-ntp-logo {
+              width: 56px;
+            }
+          }
+
+			    .tldr-teaser-row {
+			      width: 100%;
+			      display: grid;
+			      grid-template-columns: repeat(2, minmax(0, 1fr));
 		      gap: 16px;
 		      align-items: start;
 		    }
@@ -156,14 +202,15 @@
 		      }
 		    }
 
-		    .demo-video {
-		      width: 100%;
-		      height: auto;
-		      border-radius: 12px;
-		      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
-		      background: #000;
-		      display: block;
-		    }
+			    .demo-video {
+			      width: 100%;
+			      height: auto;
+            aspect-ratio: 16 / 9;
+			      border-radius: 12px;
+			      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+			      background: #000;
+			      display: block;
+			    }
 
 		    .tldr-figure {
 		      display: flex;
@@ -257,11 +304,32 @@
 	      display: block;
 	    }
 
-    @media (max-width: 768px) {
-      .secondary-teaser-img {
-        width: 100%;
+	    @media (max-width: 768px) {
+	      .secondary-teaser-img {
+	        width: 100%;
+	      }
+	    }
+
+      .main-qualitative {
+        max-width: 1200px;
+        margin: 22px auto 0;
+        padding: 0 20px;
       }
-    }
+
+      .main-qualitative figure {
+        margin: 0;
+      }
+
+      .main-qualitative img {
+        width: 100%;
+        max-width: 1100px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        background: #fff;
+        display: block;
+        margin: 0 auto;
+      }
 
     /* Reuse our project-page callouts + author cycling */
     .joint-authors {
@@ -667,59 +735,101 @@
 	    <div class="tldr-container">
 		      <div class="tldr-content">
 				        <div class="tldr-teaser-layout">
-				          <div class="tldr-teaser-row">
-				              <div class="tldr-demo" data-legend-start="2.5">
-				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
-				                  <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
-				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
-				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Guns</div>
-				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Thrusters</div>
-				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Turret</div>
-				                </div>
-				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
-				                  <source src="data/spaceship_combined.mp4" type="video/mp4">
-				                  Your browser does not support the video tag.
-				                </video>
-				              </div>
+                  <div class="tldr-video-pair-row" data-video-sync-pair>
+                    <div class="tldr-video-cell">
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="mesh">
+                        <source src="data/spaceship_mesh.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
 
-				              <div class="tldr-demo" data-legend-start="2.5">
-				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
-				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Casing</div>
-				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Dial Assembly</div>
-				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Handset</div>
-				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Wire</div>
-				                  <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Handset Feet</div>
-				                </div>
-				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
-				                  <source src="data/telephone_combined.mp4" type="video/mp4">
-				                  Your browser does not support the video tag.
-				                </video>
-				              </div>
-				          </div>
+                    <div class="tldr-ntp-spacer" aria-hidden="true">
+                      <img src="data/ntp_logo.png" class="tldr-ntp-logo" alt="">
+                    </div>
 
-				          <div class="tldr-teaser-row tldr-teaser-row--mixed">
-				              <div class="tldr-demo" data-legend-start="2.5">
-				                <div class="video-legend video-legend--side" data-timed-legend aria-hidden="true">
-				                  <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Cap</div>
-				                  <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Bristles</div>
-				                  <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Toothbrush</div>
-				                  <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Toothpaste</div>
-				                  <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Tube</div>
-				                </div>
-				                <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="demo-video">
-				                  <source src="data/toothpaste_combined.mp4" type="video/mp4">
-				                  Your browser does not support the video tag.
-				                </video>
-				              </div>
+                    <div class="tldr-video-cell teaser-video">
+                      <div class="video-legend video-legend--overlay" aria-hidden="true">
+                        <div class="legend-item" style="--legend-color:#18c7c9;"><span class="legend-swatch"></span>Cockpit</div>
+                        <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Fuselage</div>
+                        <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Guns</div>
+                        <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Thrusters</div>
+                        <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Turret</div>
+                      </div>
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="seg">
+                        <source src="data/spaceship_seg.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
 
-				              <div class="tldr-figure">
-				                <img class="secondary-teaser-img" src="static/images/teaser.png" alt="Secondary teaser: named 3D part segmentation">
-				              </div>
-				          </div>
+                  <div class="tldr-video-pair-row" data-video-sync-pair>
+                    <div class="tldr-video-cell">
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="mesh">
+                        <source src="data/telephone_mesh.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+
+                    <div class="tldr-ntp-spacer" aria-hidden="true">
+                      <img src="data/ntp_logo.png" class="tldr-ntp-logo" alt="">
+                    </div>
+
+                    <div class="tldr-video-cell teaser-video">
+                      <div class="video-legend video-legend--overlay" aria-hidden="true">
+                        <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Casing</div>
+                        <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Dial Assembly</div>
+                        <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Handset</div>
+                        <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Wire</div>
+                        <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Handset Feet</div>
+                      </div>
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="seg">
+                        <source src="data/telephone_seg_fixed.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+
+                  <div class="tldr-video-pair-row" data-video-sync-pair>
+                    <div class="tldr-video-cell">
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="mesh">
+                        <source src="data/toothpaste_mesh.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+
+                    <div class="tldr-ntp-spacer" aria-hidden="true">
+                      <img src="data/ntp_logo.png" class="tldr-ntp-logo" alt="">
+                    </div>
+
+                    <div class="tldr-video-cell teaser-video">
+                      <div class="video-legend video-legend--overlay" aria-hidden="true">
+                        <div class="legend-item" style="--legend-color:#2f5bff;"><span class="legend-swatch"></span>Cap</div>
+                        <div class="legend-item" style="--legend-color:#f5c400;"><span class="legend-swatch"></span>Bristles</div>
+                        <div class="legend-item" style="--legend-color:#ff4bd8;"><span class="legend-swatch"></span>Toothbrush</div>
+                        <div class="legend-item" style="--legend-color:#35c759;"><span class="legend-swatch"></span>Toothpaste</div>
+                        <div class="legend-item" style="--legend-color:#ff2d2d;"><span class="legend-swatch"></span>Tube</div>
+                      </div>
+                      <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+                             class="demo-video" data-sync-role="seg">
+                        <source src="data/toothpaste_seg.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+
+                  <div class="tldr-figure tldr-figure--teaser-row">
+                    <img class="secondary-teaser-img secondary-teaser-img--row" src="static/images/teaser.png"
+                         alt="Secondary teaser: named 3D part segmentation">
+                  </div>
 				        </div>
 
-		        <div class="video-caption">
-		          <strong>TL;DR:</strong>
+			        <div class="video-caption">
+			          <strong>TL;DR:</strong>
 		          We propose <strong>ALIGN-Parts</strong>, a fast, one-shot method for <strong>semantic 3D part segmentation and naming</strong>.
 		          ALIGN-Parts predicts a small set of shape-conditioned <em>partlets</em> (each a mask + text embedding) and matches them to
 		          natural-language part descriptions via bipartite alignment.
@@ -748,19 +858,29 @@
 			                   data-audio-progress data-audio-target="podcast-audio" aria-label="Podcast seek bar">
 			            <span class="podcast-time" data-audio-time data-audio-target="podcast-audio">0:00 / 0:00</span>
 			          </div>
-			          <audio id="podcast-audio" class="podcast-audio" preload="metadata">
-			            <source src="data/podcast.m4a" type="audio/mp4">
-			            Your browser does not support the audio element.
-			          </audio>
-			        </div>
-		      </div>
-		    </div>
-		  </div>
+				          <audio id="podcast-audio" class="podcast-audio" preload="metadata">
+				            <source src="data/podcast.m4a" type="audio/mp4">
+				            Your browser does not support the audio element.
+				          </audio>
+				        </div>
+			      </div>
+			    </div>
+			  </div>
 
-  <d-article>
-    <d-contents>
-      <nav>
-        <h4>Contents</h4>
+      <div class="main-qualitative">
+        <figure>
+          <img src="static/images/qualitative.png" alt="Main qualitative results">
+          <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
+            <strong>Qualitative results.</strong> ALIGN-Parts segments and names a complete set of parts in a single forward pass. Compared to Find3D and PartField,
+            it better recovers fine parts (e.g., handles) and avoids fragmented clustering.
+          </figcaption>
+        </figure>
+      </div>
+
+	  <d-article>
+	    <d-contents>
+	      <nav>
+	        <h4>Contents</h4>
         <div class="nav-section"><a href="#motivation">Motivation</a></div>
         <div class="nav-section"><a href="#introduction">Introduction</a></div>
         <div class="nav-section"><a href="#experiments">Experiments</a></div>
@@ -931,21 +1051,10 @@
 	      </div>
 	    </div>
 
-    <div class="responsive-image-container">
-      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
-        <img src="static/images/qualitative.png" alt="Main qualitative results figure"
-             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
-      </figure>
-      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
-        <strong>Qualitative results.</strong> ALIGN-Parts segments and names a complete set of parts in a single forward pass. Compared to Find3D and PartField,
-        it better recovers fine parts (e.g., handles) and avoids fragmented clustering.
-      </figcaption>
-    </div>
-
-	    <div class="responsive-image-container">
-	      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
-	        <img src="static/images/ablation.png" alt="Ablation qualitative results figure"
-	             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
+		    <div class="responsive-image-container">
+		      <figure style="margin: 0; background: transparent; border: none; padding: 0;">
+		        <img src="static/images/ablation.png" alt="Ablation qualitative results figure"
+		             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.10);">
 	      </figure>
 	      <figcaption style="text-align: center; margin: 10px 0 0 0; padding: 0; font-style: italic; color: #666; font-size: 0.95em; background: none; border: none; box-shadow: none;">
 	        <strong>Ablation (qualitative).</strong> Results improve left-to-right as components are added; major gains come from Partlets and the coverage/overlap regularizers, which reduce leakage and misalignment.
