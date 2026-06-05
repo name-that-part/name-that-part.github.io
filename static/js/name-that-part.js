@@ -1,5 +1,5 @@
 (() => {
-  const rotationDelayMs = 3000;
+  const rotationDelayMs = 10000;
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     typeof window.matchMedia === "function" &&

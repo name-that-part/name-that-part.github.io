@@ -30,7 +30,7 @@
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-  <!-- Author rotation -->
+  <!-- Project page interactions -->
   <script defer src="static/js/name-that-part.js"></script>
 
   <style>
@@ -104,6 +104,37 @@
       color: #555;
       font-size: 1.05rem;
       line-height: 1.5;
+    }
+
+    .venue-line {
+      max-width: 1000px;
+      margin: 10px auto 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px 12px;
+      color: #2f3b45;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .venue-line strong {
+      color: #0f598a;
+      font-weight: 700;
+    }
+
+    .venue-link {
+      color: #1e56ff;
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+    }
+
+    .venue-link:hover {
+      color: #0f3bd8;
     }
 
 			    .tldr-teaser-layout {
@@ -686,7 +717,7 @@
 	  <div class="byline-card">
 	    <div class="authors">
 	      <span class="joint-authors joint-cycle" data-joint-cycle="equal" data-joint-container="equal"
-	            tabindex="0" aria-label="Equal contribution authors (auto-swapping; hover to pause)">
+	            tabindex="0" aria-label="Equal contribution authors (auto-swapping every 10 seconds; hover to pause)">
 		        <span class="joint-author"><a class="author-link" href="https://mvp18.github.io" target="_blank" rel="noopener noreferrer">Soumava Paul<sup class="author-sup">*</sup></a>,&nbsp;</span>
 		        <span class="joint-author"><a class="author-link" href="https://toshi2k2.github.io" target="_blank" rel="noopener noreferrer">Prakhar Kaushik<sup class="author-sup">*‡</sup></a>,&nbsp;</span>
 	      </span>
@@ -708,6 +739,11 @@
       ALIGN-Parts predicts a complete set of named 3D parts by aligning part-level representations (“Partlets”) to natural-language descriptions.
     </p>
 
+    <p class="venue-line" aria-label="Publication and presentation venues">
+      <span><strong>Accepted to CVPR Findings 2026.</strong></span>
+      <span>Also presented at <a class="venue-link" href="https://3dmv.org/2026/" target="_blank" rel="noopener noreferrer">3DMV @ CVPR 2026</a> and <a class="venue-link" href="https://musi-workshop.github.io/" target="_blank" rel="noopener noreferrer">MUSI @ CVPR 2026</a>.</span>
+    </p>
+
 	    <div class="button-container" style="text-align: center; margin-top: 10px;">
 		      <a class="button" href="https://arxiv.org/abs/2512.18003" target="_blank" rel="noopener noreferrer">
 		        <span class="icon"><i class="ai ai-arxiv"></i></span>
@@ -717,13 +753,13 @@
 	        <span class="icon"><i class="fas fa-file-pdf"></i></span>
 	        <span>Paper</span>
 	      </a>
-		      <a class="button" href="#" onclick="return false;">
+		      <a class="button" href="https://github.com/mvp18/name-that-part" target="_blank" rel="noopener noreferrer">
 		        <span class="icon"><i class="fab fa-github"></i></span>
-		        <span>Code (soon)</span>
+		        <span>Code</span>
 		      </a>
-		      <a class="button" href="#" onclick="return false;">
+		      <a class="button" href="https://github.com/mvp18/name-that-part" target="_blank" rel="noopener noreferrer">
 		        <span class="icon"><i class="fas fa-sitemap"></i></span>
-		        <span>Unified Dataset (soon)</span>
+		        <span>Unified Dataset</span>
 		      </a>
 		      <a class="button" href="#" onclick="return false;">
 		        <span class="icon"><i class="fas fa-cubes"></i></span>
@@ -1122,9 +1158,17 @@
 
     <h2 class="text" id="future-work">Future Work</h2>
     <p class="text">
-      Limitations include robustness to noisy real-world scans, distribution shift for confidence calibration, and open-vocabulary generalization beyond
-      categories similar to training data. Promising directions include extending to articulated objects and integrating part-level alignment into 3D
-      foundation models for manipulation and generation.
+      The next version of ALIGN-Parts focuses first on scaling: moving from 10k sampled points to 100k points per shape so fine parts are better
+      represented, and replacing the multi-view DINOv2 feature-lifting stage with Utonia, a feedforward semantic point encoder for more
+      accurate and semantically meaningful 3D appearance features.
+    </p>
+    <p class="text">
+      Near-term applications center on text- and part-based mesh editing. Named, affordance-grounded parts make it natural to localize geometric edits
+      such as “make the chair legs thinner” and appearance edits such as “make the seat metallic” to the right regions of a shape.
+    </p>
+    <p class="text">
+      Longer term, part-level representations are a useful substrate for kinematics and physics prediction, including part-aware articulation,
+      contact reasoning, and physical dynamics for structured 3D world models.
     </p>
 
     <h2 class="text" id="bibtex">BibTeX</h2>
